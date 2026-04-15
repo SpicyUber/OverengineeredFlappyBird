@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class Ability : ScriptableObject
 {
     [SerializeField] protected AnimationClip _animation;
+    [SerializeField] protected SoundEffect _soundEffect;
     [SerializeField][Range(0.0f, 1f)] protected float _windUpPercentage;
     [SerializeField][Range(0.0f, 1f)] protected float _uninterruptablePercentage;
     [SerializeField] protected float _baseDuration;
