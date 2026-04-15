@@ -1,4 +1,5 @@
 using System;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
  
@@ -17,6 +18,8 @@ public abstract class Ability : ScriptableObject
 
         SetStartTime();
 
+        if (!CanExecute(activatorTransform)) return;
+
         SetAbilityStats(activatorStats);
        
         PlayAnimation(activatorAnimator);
@@ -26,6 +29,8 @@ public abstract class Ability : ScriptableObject
         PlaySound(activatorAudioSource);
     
     }
+
+    protected virtual bool CanExecute(Transform transform) => true;
 
     private void SetStartTime()
     {

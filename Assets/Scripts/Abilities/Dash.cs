@@ -30,12 +30,15 @@ public class Dash : Ability
         yield return 0f;
     }
 
-    
 
-    private bool CanDash(Vector3 direction)
-    {
-        throw new NotImplementedException();
-    }
+
+    protected override bool CanExecute(Transform transform) => !Physics.Raycast(new(transform.position,transform.TransformDirection(_direction)),_distance);
+
+
+
+
+
+
 
     protected override void PlayAnimation(Animator animator)
     {

@@ -20,11 +20,6 @@ public class Player : Singleton<Player>
 
     void OnUseAbility(InputValue value) => ActivateAbility(_useItem);
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawCube(transform.position, Vector3.one);
-
-    }
 
     private void ActivateAbility(Ability ability)
     {

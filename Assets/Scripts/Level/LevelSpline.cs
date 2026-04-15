@@ -1,10 +1,13 @@
 
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelSpline", menuName = "Scriptable Objects/LevelSpline")]
 public class LevelSpline : ScriptableObject
 {
     [SerializeField] BezierCurve[] _bezierCurves;
+
+    private readonly float _getRotationInterval = 0.001f;
     public float GetMaxU() => _bezierCurves.Length;
 
     public BezierCurve GetBezierCurveAtIndex(int index) => _bezierCurves[index];
@@ -36,6 +39,15 @@ public class LevelSpline : ScriptableObject
 
     }
 
+    public Quaternion GetRotation(float time)
+    {
+        Vector3 position1 =GetPointVector3(time);
+        Vector3 position2 =GetPointVector3(time + _getRotationInterval);
+        Vector3 forward = (position2 - position1).normalized;
+        return Quaternion.LookRotation(forward, Vector3.up);
+
+    }
+
     [ContextMenu("Enforce C1 Continuity")] void EnforceC1Continity() 
     {
         for (int i = 1; i < _bezierCurves.Length; i++) { 
@@ -57,4 +69,6 @@ public class LevelSpline : ScriptableObject
 
         }
     }
+
+    
 }
