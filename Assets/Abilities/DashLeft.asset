@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea7559e811438944699fcfdb49c3174b, type: 3}
   m_Name: DashLeft
   m_EditorClassIdentifier: Assembly-CSharp::Dash
-  _animation: {fileID: 0}
+  _soundEffect: {fileID: 11400000, guid: 555f7872005f5e140aa700622a7eeba4, type: 2}
+  _animationName: DashLeft
   _windUpPercentage: 0
   _uninterruptablePercentage: 1
-  _baseDuration: 0.4
+  _baseDuration: 0.3
   _direction: {x: -1, y: 0, z: 0}
   _distance: 4

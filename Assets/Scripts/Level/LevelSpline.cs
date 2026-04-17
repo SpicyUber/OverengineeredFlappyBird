@@ -7,7 +7,7 @@ public class LevelSpline : ScriptableObject
 {
     [SerializeField] BezierCurve[] _bezierCurves;
 
-    private readonly float _getRotationInterval = 0.001f;
+    private readonly float _getRotationInterval = 1f;
     public float GetMaxU() => _bezierCurves.Length;
 
     public BezierCurve GetBezierCurveAtIndex(int index) => _bezierCurves[index];
@@ -39,17 +39,25 @@ public class LevelSpline : ScriptableObject
 
     }
 
-    public Quaternion GetRotation(float time)
+    public Quaternion GetRotation(float u)
     {
-        Vector3 position1 =GetPointVector3(time);
-        Vector3 position2 =GetPointVector3(time + _getRotationInterval);
-        Vector3 forward = (position2 - position1).normalized;
+         
+        Vector3 forward = GetForwardVector(u);
         return Quaternion.LookRotation(forward, Vector3.up);
 
     }
 
-    [ContextMenu("Enforce C1 Continuity")] void EnforceC1Continity() 
+    public Vector3 GetForwardVector(float u)
     {
+        Vector3 position1 = GetPointVector3(u);
+        Vector3 position2 = GetPointVector3(u + _getRotationInterval);
+        return (position2 - position1).normalized;
+    }
+
+    [ContextMenu("Enforce C1 Continuity")] 
+    void EnforceC1Continuity() 
+    {
+        EnforceC0Continuity();
         for (int i = 1; i < _bezierCurves.Length; i++) { 
         
              
@@ -59,7 +67,7 @@ public class LevelSpline : ScriptableObject
     }
 
     [ContextMenu("Enforce C0 Continuity")]
-    void EnforceC0Continity()
+    void EnforceC0Continuity()
     {
         for (int i = 1; i < _bezierCurves.Length; i++)
         {
@@ -70,5 +78,24 @@ public class LevelSpline : ScriptableObject
         }
     }
 
-    
+    [ContextMenu("Enforce C0 Continuity For Loops")]
+    void EnforceCircularC0Continuity()
+    {
+                EnforceC0Continuity();
+              _bezierCurves[_bezierCurves.Length - 1].P3= _bezierCurves[0].P0;
+
+         
+    }
+
+    [ContextMenu("Enforce C1 Continuity For Loops")]
+    void EnforceCircularC1Continuity()
+    {
+        EnforceCircularC0Continuity();
+        EnforceC1Continuity();
+        _bezierCurves[0].P1 = 2 * _bezierCurves[_bezierCurves.Length - 1].P3 - _bezierCurves[_bezierCurves.Length - 1].P2;
+
+
+    }
+
+
 }

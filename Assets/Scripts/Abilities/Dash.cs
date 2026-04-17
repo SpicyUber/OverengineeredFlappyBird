@@ -11,6 +11,7 @@ public class Dash : Ability
     [SerializeField] float _distance;
     private CoroutineHandle _coroutine;
     private Vector3 _startPosition, _endPosition;
+    private readonly string _dashCheckPhysicsLayer="DashWall";
    
     protected override void PlayAction(Transform transform)
     {
@@ -32,7 +33,7 @@ public class Dash : Ability
 
 
 
-    protected override bool CanExecute(Transform transform) => !Physics.Raycast(new(transform.position,transform.TransformDirection(_direction)),_distance);
+    protected override bool CanExecute(Transform transform) => !Physics.Raycast(new(transform.position,transform.TransformDirection(_direction)),_distance, LayerMask.GetMask(_dashCheckPhysicsLayer));
 
 
 
@@ -42,12 +43,12 @@ public class Dash : Ability
 
     protected override void PlayAnimation(Animator animator)
     {
-        
+        animator.Play(_animationName,-1);
     }
 
     protected override void PlaySound(AudioSource audioSource)
     {
-        
+        audioSource.PlayOneShot(_soundEffect.Clip);
     }
 
     protected override void StopAction(Transform transform)

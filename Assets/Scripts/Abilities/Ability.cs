@@ -1,16 +1,18 @@
 using System;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
- 
+
 public abstract class Ability : ScriptableObject
 {
-    [SerializeField] protected AnimationClip _animation;
     [SerializeField] protected SoundEffect _soundEffect;
+    [SerializeField] protected string _animationName;
     [SerializeField][Range(0.0f, 1f)] protected float _windUpPercentage;
     [SerializeField][Range(0.0f, 1f)] protected float _uninterruptablePercentage;
     [SerializeField] protected float _baseDuration;
     protected float _duration;
+    public bool Enabled { get; private set; }
+   
 
     private float _startTime=0f;
     protected float _timer=>Time.time-_startTime;
@@ -19,7 +21,13 @@ public abstract class Ability : ScriptableObject
 
         SetStartTime();
 
-        if (!CanExecute(activatorTransform)) return;
+        Enabled = true;
+
+        if (!CanExecute(activatorTransform)) 
+        { 
+            Enabled = false;
+            return; 
+        }
 
         SetAbilityStats(activatorStats);
        
@@ -42,8 +50,12 @@ public abstract class Ability : ScriptableObject
 
     public bool TryInterrupt(Transform transform, Animator animator, AudioSource audioSource)
     {
+        if (!Enabled) return false;
+
         if (_timer <= _uninterruptablePercentage * _duration) 
             return false;
+
+        Enabled = false;
 
         StopAnimation(animator);
 
