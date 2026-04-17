@@ -1,24 +1,41 @@
 using System;
  
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Rail : Singleton<Rail>
+public class Rail : MonoBehaviour
 {
     [SerializeField] double _speed = 0.25f;
+    [SerializeField] float _offset = 0f;
     [SerializeField] LevelSpline _level;
+    [SerializeField] UnityEvent OnLevelUIncremented;
+    [SerializeField] bool _move=true, _rotate=true;
+
+    private float _lastFrameU;
 
     private Quaternion _endRotation = Quaternion.identity;
 
     private double _lastFrameTime=0;
 
     private bool _paused = false;
-    public float CurrentLevelU => Time.time * (float)_speed;
+    public float CurrentLevelU => Time.time * (float)_speed+_offset;
     private void Update()
     {
         if (_paused) return;
+        if(_move)
         UpdatePosition();
+        if(_rotate)
         UpdateRotation();
         IncrementSpeed();
+        TrackAndCompareU();
+    }
+
+    private void TrackAndCompareU()
+    {
+        if (Mathf.FloorToInt(_lastFrameU) < Mathf.FloorToInt(CurrentLevelU))
+            OnLevelUIncremented?.Invoke();
+
+        _lastFrameU = CurrentLevelU;
     }
 
     private void IncrementSpeed()

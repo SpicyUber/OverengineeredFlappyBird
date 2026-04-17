@@ -1,14 +1,24 @@
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class MessageBox : Singleton<MessageBox>
+public class MessageBox : SingletonPersistent<MessageBox>
 {
-    GameObject _scoreDisplay;
-    public void DisplayScore()
+    GameObject _msgDisplay;
+    public void DisplayMessage(string message,float duration)
     {
-        if(_scoreDisplay)Destroy(_scoreDisplay);
-        _scoreDisplay = GameObject.Instantiate(new GameObject(), this.transform);
-        _scoreDisplay.AddComponent<TextMeshProUGUI>().text = $"GAME OVER! SCORE {(int)Rail.Instance.CurrentLevelU}";
+        if(_msgDisplay)Destroy(_msgDisplay);
+        _msgDisplay = GameObject.Instantiate(new GameObject(), this.transform);
+        _msgDisplay.AddComponent<TextMeshProUGUI>().text = message;
+        StartCoroutine(MessageCoroutine(duration));
+    }
+
+    IEnumerator MessageCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if( _msgDisplay) Destroy(_msgDisplay);
+
     }
 }
