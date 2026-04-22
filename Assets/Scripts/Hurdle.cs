@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+// @Builder - u Javi biblioteka Lombok, vidi je l ima za c#; Svk ne koristi se nesto Builder na klijentu iz mog iskustva
 public class Hurdle : MonoBehaviour
 {
     private float _selfDestructIfOtherHurdleFoundRadius;
