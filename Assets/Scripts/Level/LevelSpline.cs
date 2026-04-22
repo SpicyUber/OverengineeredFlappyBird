@@ -3,19 +3,21 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelSpline", menuName = "Scriptable Objects/LevelSpline")]
-public class LevelSpline : ScriptableObject
+public class LevelSpline : ScriptableObject // LevelSplineSO
 {
     [SerializeField] BezierCurve[] _bezierCurves;
 
     private readonly float _getRotationInterval = 1f;
+    
     public float GetMaxU() => _bezierCurves.Length;
-
     public BezierCurve GetBezierCurveAtIndex(int index) => _bezierCurves[index];
+    
     public Vector3 GetPointVector3(float u)
     {
         Vector2 point = GetPointVector2(u);
         return new Vector3(point.x, 0, point.y);
     }
+    
     private Vector2 GetPointVector2(float u)
     {
         u = u % (float)_bezierCurves.Length;
@@ -34,17 +36,12 @@ public class LevelSpline : ScriptableObject
         Vector2 P1223 = Vector2.Lerp(P12, P23, t);
 
         return Vector2.Lerp(P0112, P1223, t);
-
-
-
     }
 
     public Quaternion GetRotation(float u)
     {
-         
         Vector3 forward = GetForwardVector(u);
         return Quaternion.LookRotation(forward, Vector3.up);
-
     }
 
     public Vector3 GetForwardVector(float u)
@@ -58,11 +55,9 @@ public class LevelSpline : ScriptableObject
     void EnforceC1Continuity() 
     {
         EnforceC0Continuity();
-        for (int i = 1; i < _bezierCurves.Length; i++) { 
-        
-             
+        for (int i = 1; i < _bezierCurves.Length; i++) 
+        {
             _bezierCurves[i].P1 = 2*_bezierCurves[i-1].P3 -_bezierCurves[i-1].P2;
-        
         }
     }
 
@@ -71,10 +66,7 @@ public class LevelSpline : ScriptableObject
     {
         for (int i = 1; i < _bezierCurves.Length; i++)
         {
-
-
             _bezierCurves[i].P0 =_bezierCurves[i - 1].P3 ;
-
         }
     }
 
@@ -83,8 +75,6 @@ public class LevelSpline : ScriptableObject
     {
                 EnforceC0Continuity();
               _bezierCurves[_bezierCurves.Length - 1].P3= _bezierCurves[0].P0;
-
-         
     }
 
     [ContextMenu("Enforce C1 Continuity For Loops")]
@@ -93,9 +83,5 @@ public class LevelSpline : ScriptableObject
         EnforceCircularC0Continuity();
         EnforceC1Continuity();
         _bezierCurves[0].P1 = 2 * _bezierCurves[_bezierCurves.Length - 1].P3 - _bezierCurves[_bezierCurves.Length - 1].P2;
-
-
     }
-
-
 }
